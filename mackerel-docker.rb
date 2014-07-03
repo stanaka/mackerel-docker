@@ -12,14 +12,14 @@ Docker::Container.all.each do |c|
   name = name.tr(':/', '_')
 
   cpuacct_last = File.read("#{BASE_CPU}/#{c.id}/cpuacct.stat")
-  usr_last = cpuacct.match(/user (\d+)/)[1]
-  sys_last = cpuacct.match(/system (\d+)/)[1]
+  usr_last = cpuacct_last.match(/user (\d+)/)[1].to_i
+  sys_last = cpuacct_last.match(/system (\d+)/)[1].to_i
   sleep(period)
   cpuacct_now = File.read("#{BASE_CPU}/#{c.id}/cpuacct.stat")
-  usr_now = cpuacct.match(/user (\d+)/)[1]
-  sys_now = cpuacct.match(/system (\d+)/)[1]
-  output.push ["docker.cpu.#{name}_user",   (usr_now - usr_last / period)]
-  output.push ["docker.cpu.#{name}_system", (sys_now - sys_last / period)]
+  usr_now = cpuacct_now.match(/user (\d+)/)[1].to_i
+  sys_now = cpuacct_now.match(/system (\d+)/)[1].to_i
+  output.push ["docker.cpu.#{name}_user",   (usr_now - usr_last) / period]
+  output.push ["docker.cpu.#{name}_system", (sys_now - sys_last) / period]
 
   mem = File.read("#{BASE_MEM}/#{c.id}/memory.stat")
   rss = mem.match(/rss (\d+)/)[1]
