@@ -7,7 +7,8 @@ BASE_MEM='/sys/fs/cgroup/memory/docker'
 period = 5
 
 output = []
-Docker::Container.all.each do |c|
+containers = Docker::Container.all
+containers.each do |c|
   name = "#{c.info["Image"]}_#{c.info["Names"].join("_")}"
   name = name.tr(':/', '_')
 
@@ -29,3 +30,4 @@ end
 output.each do |o|
   puts "#{o[0]}\t#{o[1]}\t#{now.to_i}"
 end
+puts "docker.containers\t#{containers.size}\t#{now.to_i}"
